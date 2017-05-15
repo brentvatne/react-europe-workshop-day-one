@@ -15,6 +15,11 @@ import ScheduleSectionHeader from '../components/ScheduleSectionHeader';
 import { eventsForThursday, eventsForFriday } from '../data/mock';
 
 export default class ScheduleListScreen extends React.Component {
+
+  static navigationOptions = {
+    header: null,
+  }
+
   state = {
     selectedDay: 'Thursday',
     isRefreshing: false,
@@ -50,7 +55,7 @@ export default class ScheduleListScreen extends React.Component {
     return new Promise(resolve => {
       setTimeout(resolve, 2000);
     });
-  }
+  };
 
   _listHeaderComponent = props => {
     return (
@@ -68,7 +73,13 @@ export default class ScheduleListScreen extends React.Component {
   };
 
   _renderItem = ({ item }) => {
-    return <ScheduleItemSummary item={item} />;
+    return (
+      <ScheduleItemSummary
+        item={item}
+        onPress={() =>
+          this.props.navigation.navigate('EventDetails', { event: item })}
+      />
+    );
   };
 }
 
@@ -97,7 +108,8 @@ class HeaderComponent extends React.Component {
       <View style={styles.headerContainer}>
         <Image
           source={require('../assets/hero.png')}
-          style={styles.headerImage} />
+          style={styles.headerImage}
+        />
 
         <View
           style={{

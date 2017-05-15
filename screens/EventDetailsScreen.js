@@ -4,26 +4,36 @@ import SpeakerRow from '../components/SpeakerRow';
 
 export default class EventDetails extends React.Component {
   render() {
+    let { params } = this.props.navigation.state;
+    let { event } = params;
+
     return (
       <View style={styles.container}>
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>
-            Conference Keynote
+            {event.title}
           </Text>
           <Text style={styles.subtitle}>
             Thursday, May 18, 10-10:45 AM
           </Text>
           <Text style={styles.description}>
-            Hear about some stuff that has happened,
-            and some other things that people think
-            bout, and want to talk about, for some
-            weird reason, to a lot of other people.
+            {event.description}
           </Text>
         </View>
-        <SpeakerRow title={'Lucy Vatne'} subtitle={'11/10 doggo'} />
+        {this._maybeRenderSpeakerRow()}
       </View>
     );
   }
+
+  _maybeRenderSpeakerRow = () => {
+    let { params } = this.props.navigation.state;
+    let { event } = params;
+
+    if (event.speakers && event.speakers.length) {
+      let speaker = event.speakers[0];
+      return <SpeakerRow title={speaker.name} subtitle={speaker.bio} />;
+    }
+  };
 }
 
 const styles = StyleSheet.create({

@@ -15,6 +15,14 @@ import {
 import GrowingTextInput from '../components/GrowingTextInput';
 
 export default class FeedbackScreen extends React.Component {
+  static navigationOptions = {
+    headerStyle: {
+      backgroundColor: '#050B7A',
+    },
+    headerTitle: 'Feedback',
+    headerTintColor: '#fff',
+  }
+
   state = {
     feedbackText: '',
     isUrgent: false,
@@ -23,9 +31,6 @@ export default class FeedbackScreen extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={styles.navbar}>
-          <Text style={styles.title}>Feedback</Text>
-        </View>
         <ScrollView
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="always"
@@ -161,13 +166,6 @@ const SectionLabel = ({ title }) => (
 );
 
 const styles = StyleSheet.create({
-  navbar: {
-    height: 65,
-    paddingTop: Expo.Constants.statusBarHeight,
-    backgroundColor: '#050B7A',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   scrollView: {
     flex: 1,
     backgroundColor: '#F8F8F9',

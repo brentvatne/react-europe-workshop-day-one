@@ -1,12 +1,12 @@
 import React from 'react';
-import { Image, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Image, Text, StyleSheet, View } from 'react-native';
 
 export default class ScheduleItemSummary extends React.Component {
   render() {
     const { item } = this.props;
 
     return (
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
         <View style={styles.textContainer}>
           <Text style={styles.title}>
             {item.title}
@@ -15,7 +15,7 @@ export default class ScheduleItemSummary extends React.Component {
         </View>
 
         {this._maybeRenderAvatar()}
-      </View>
+      </TouchableOpacity>
     );
   }
 
