@@ -3,11 +3,12 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 
 export default class SpeakerRow extends React.Component {
   render() {
-    const { title, subtitle, image } = this.props;
+    const { title, subtitle, avatarUrl } = this.props;
 
     return (
       <View style={styles.container}>
-        <Image style={styles.image} source={image} />
+        {avatarUrl &&
+          <Image style={styles.image} source={{ uri: avatarUrl }} />}
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>
             {title}

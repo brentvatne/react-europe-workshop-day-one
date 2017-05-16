@@ -15,10 +15,9 @@ import ScheduleSectionHeader from '../components/ScheduleSectionHeader';
 import { eventsForThursday, eventsForFriday } from '../data/mock';
 
 export default class ScheduleListScreen extends React.Component {
-
   static navigationOptions = {
     header: null,
-  }
+  };
 
   state = {
     selectedDay: 'Thursday',
@@ -38,6 +37,7 @@ export default class ScheduleListScreen extends React.Component {
     return (
       <View style={styles.container}>
         <SectionList
+          removeClippedSubviews={false}
           onRefresh={this._handleRefreshAsync}
           refreshing={this.state.isRefreshing}
           keyExtractor={item => item.id}

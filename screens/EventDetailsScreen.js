@@ -1,11 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import SpeakerRow from '../components/SpeakerRow';
+import parseCustomDateString from '../util/parseCustomDateString';
+import moment from 'moment';
 
 export default class EventDetails extends React.Component {
   render() {
     let { params } = this.props.navigation.state;
     let { event } = params;
+    let formattedDate = moment(parseCustomDateString(event.startDate)).format(
+      'dddd MMMM Do, h:mm A'
+    );
 
     return (
       <View style={styles.container}>
@@ -14,7 +19,7 @@ export default class EventDetails extends React.Component {
             {event.title}
           </Text>
           <Text style={styles.subtitle}>
-            Thursday, May 18, 10-10:45 AM
+            {formattedDate}
           </Text>
           <Text style={styles.description}>
             {event.description}
@@ -31,7 +36,13 @@ export default class EventDetails extends React.Component {
 
     if (event.speakers && event.speakers.length) {
       let speaker = event.speakers[0];
-      return <SpeakerRow title={speaker.name} subtitle={speaker.bio} />;
+      return (
+        <SpeakerRow
+          title={speaker.name}
+          subtitle={speaker.bio}
+          avatarUrl={speaker.avatarUrl}
+        />
+      );
     }
   };
 }
