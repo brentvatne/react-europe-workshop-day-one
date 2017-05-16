@@ -48,6 +48,7 @@ export default class FeedbackScreen extends React.Component {
               placeholder="Full name"
               onSubmitEditing={() => this._emailInput.focus()}
               underlineColorAndroid="transparent"
+              blurOnSubmit={false}
             />
           </View>
 
@@ -62,6 +63,7 @@ export default class FeedbackScreen extends React.Component {
               keyboardType="email-address"
               onSubmitEditing={() => this._phoneInput.focus()}
               underlineColorAndroid="transparent"
+              blurOnSubmit={false}
             />
           </View>
 
@@ -75,6 +77,7 @@ export default class FeedbackScreen extends React.Component {
               keyboardType="phone-pad"
               onSubmitEditing={() => this._feedbackInput.focus()}
               underlineColorAndroid="transparent"
+              blurOnSubmit={false}
             />
           </View>
 
@@ -110,8 +113,12 @@ export default class FeedbackScreen extends React.Component {
                   style={{ flex: 1, marginHorizontal: 10 }}
                   hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
                   maximumValue={10}
-                  minimumTrackTintColor={Platform.OS === 'ios' ? '#3B40B4' : '#ccc'}
-                  maximumTrackTintColor={Platform.OS === 'android' ? '#3B40B4' : null}
+                  minimumTrackTintColor={
+                    Platform.OS === 'ios' ? '#3B40B4' : '#ccc'
+                  }
+                  maximumTrackTintColor={
+                    Platform.OS === 'android' ? '#3B40B4' : null
+                  }
                   thumbTintColor="#02075B"
                 />
                 <Text>Happy</Text>
