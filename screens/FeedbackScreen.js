@@ -47,6 +47,7 @@ export default class FeedbackScreen extends React.Component {
               autoCorrect={false}
               placeholder="Full name"
               onSubmitEditing={() => this._emailInput.focus()}
+              underlineColorAndroid="transparent"
             />
           </View>
 
@@ -60,6 +61,7 @@ export default class FeedbackScreen extends React.Component {
               placeholder="Email"
               keyboardType="email-address"
               onSubmitEditing={() => this._phoneInput.focus()}
+              underlineColorAndroid="transparent"
             />
           </View>
 
@@ -72,6 +74,7 @@ export default class FeedbackScreen extends React.Component {
               placeholder="Phone Number"
               keyboardType="phone-pad"
               onSubmitEditing={() => this._feedbackInput.focus()}
+              underlineColorAndroid="transparent"
             />
           </View>
 
