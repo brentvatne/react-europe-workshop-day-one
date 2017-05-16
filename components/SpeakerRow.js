@@ -7,8 +7,7 @@ export default class SpeakerRow extends React.Component {
 
     return (
       <View style={styles.container}>
-        {avatarUrl &&
-          <Image style={styles.image} source={{ uri: avatarUrl }} />}
+        {this._maybeRenderAvatar(avatarUrl)}
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>
             {title}
@@ -18,6 +17,14 @@ export default class SpeakerRow extends React.Component {
               {subtitle}
             </Text>}
         </View>
+      </View>
+    );
+  }
+
+  _maybeRenderAvatar = (avatarUrl) => {
+    return (
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} source={{ uri: avatarUrl }} />
       </View>
     );
   }
@@ -50,8 +57,13 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     resizeMode: 'cover',
-    backgroundColor: 'rgba(0,0,0,0.1)',
     borderRadius: 32,
-    marginRight: 15,
   },
+  imageContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    marginRight: 15,
+  }
 });

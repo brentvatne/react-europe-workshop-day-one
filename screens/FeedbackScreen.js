@@ -5,6 +5,7 @@ import {
   ScrollView,
   Slider,
   Switch,
+  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -21,7 +22,7 @@ export default class FeedbackScreen extends React.Component {
     },
     headerTitle: 'Feedback',
     headerTintColor: '#fff',
-  }
+  };
 
   state = {
     feedbackText: '',
@@ -35,6 +36,7 @@ export default class FeedbackScreen extends React.Component {
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="always"
           style={styles.scrollView}>
+
           <SectionLabel title="Contact Information" />
           <View style={[styles.row, styles.firstRow]}>
             <TextInput
@@ -103,8 +105,11 @@ export default class FeedbackScreen extends React.Component {
                 <Text>Sad</Text>
                 <Slider
                   style={{ flex: 1, marginHorizontal: 10 }}
+                  hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
                   maximumValue={10}
-                  minimumTrackTintColor="#3B40B4"
+                  minimumTrackTintColor={Platform.OS === 'ios' ? '#3B40B4' : '#ccc'}
+                  maximumTrackTintColor={Platform.OS === 'android' ? '#3B40B4' : null}
+                  thumbTintColor="#02075B"
                 />
                 <Text>Happy</Text>
               </View>
@@ -123,9 +128,12 @@ export default class FeedbackScreen extends React.Component {
               </View>
               <View>
                 <Switch
-                  onTintColor="#3B40B4"
+                  onTintColor={
+                    Platform.OS === 'android' ? '#6A6DAE' : '#3B40B4'
+                  }
                   value={this.state.isUrgent}
                   onValueChange={isUrgent => this.setState({ isUrgent })}
+                  thumbTintColor={Platform.OS === 'android' ? '#02075B' : null}
                 />
               </View>
             </View>

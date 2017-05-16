@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import SpeakerRow from '../components/SpeakerRow';
 import parseCustomDateString from '../util/parseCustomDateString';
 import moment from 'moment';
@@ -13,7 +13,7 @@ export default class EventDetails extends React.Component {
     );
 
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>
             {event.title}
@@ -26,7 +26,7 @@ export default class EventDetails extends React.Component {
           </Text>
         </View>
         {this._maybeRenderSpeakerRow()}
-      </View>
+      </ScrollView>
     );
   }
 

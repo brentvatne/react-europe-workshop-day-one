@@ -1,5 +1,6 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { Constants } from 'expo';
+import { Dimensions, Platform, View } from 'react-native';
 import ScheduleListScreen from './screens/ScheduleListScreen';
 import EventDetailsScreen from './screens/EventDetailsScreen';
 import FeedbackScreen from './screens/FeedbackScreen';
@@ -64,6 +65,7 @@ const RootNavigator = TabNavigator(
   {
     tabBarComponent: TabBarBottom,
     tabBarPosition: 'bottom',
+    swipeEnabled: false,
     tabBarOptions: {
       activeTintColor: '#2242CC',
       activeBackgroundColor: '#fff',
@@ -85,7 +87,14 @@ const RootNavigator = TabNavigator(
 
 export default class App extends React.Component {
   render() {
-    return <RootNavigator />;
+    return (
+      <View style={{flex: 1}}>
+        { Platform.OS === 'android' && (
+          <View style={{height: Constants.statusBarHeight, backgroundColor: '#050B7A'}} />
+        ) }
+        <RootNavigator />
+      </View>
+    );
     // return <EventDetailsScreen />;
     // return <ScheduleListScreen />;
   }
