@@ -1,5 +1,7 @@
 import React from 'react';
+import _ from 'lodash';
 import {
+  ActivityIndicator,
   Dimensions,
   TouchableHighlight,
   SectionList,
@@ -12,9 +14,12 @@ import {
 
 import ScheduleItemSummary from '../components/ScheduleItemSummary';
 import ScheduleSectionHeader from '../components/ScheduleSectionHeader';
-import { eventsForThursday, eventsForFriday } from '../data/mock';
+import parseCustomDateString from '../util/parseCustomDateString';
 
-export default class ScheduleListScreen extends React.Component {
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+
+class ScheduleListScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -25,6 +30,38 @@ export default class ScheduleListScreen extends React.Component {
   };
 
   render() {
+    if (this.props.data.loading) {
+      return (
+        <View style={[StyleSheet.absoluteFill, {alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.25)'}]}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
+
+
+    const sortedScheduleItems = _.chain(this.props.data.events[0].schedule.slice())
+      .sort(item => item.startDate)
+      .value();
+
+    const dates = _.chain(sortedScheduleItems)
+      .map(item => item.startDate)
+      .uniq()
+      .sort()
+      .value();
+
+    const items = _.groupBy(sortedScheduleItems, item => item.startDate);
+    const itemsByDay = _.groupBy(sortedScheduleItems, item =>
+      parseCustomDateString(item.startDate).getDay()
+    );
+    const eventsForThursday = _.groupBy(
+      _.sortBy(itemsByDay[4], item => item.startDate),
+      item => item.startDate
+    );
+
+    const eventsForFriday = _.groupBy(
+      _.sortBy(itemsByDay[5], item => item.startDate),
+      item => item.startDate
+);
     const sections = [];
     let events = this.state.selectedDay === 'Thursday'
       ? eventsForThursday
@@ -46,6 +83,7 @@ export default class ScheduleListScreen extends React.Component {
           renderSectionHeader={this._renderSectionHeader}
           renderItem={this._renderItem}
         />
+
         <StatusBar barStyle="light-content" />
       </View>
     );
@@ -83,113 +121,134 @@ export default class ScheduleListScreen extends React.Component {
   };
 }
 
-class DaySelectionButton extends React.Component {
-  render() {
-    return (
-      <TouchableHighlight
-        onPress={this.props.onPress}
-        underlayColor="#19217A"
-        style={[
-          styles.daySelectionButton,
-          this.props.day === this.props.selectedDay &&
-            styles.daySelectionButtonSelected,
-        ]}>
-        <Text style={styles.daySelectionButtonText}>
-          {this.props.day.toUpperCase()}
-        </Text>
-      </TouchableHighlight>
-    );
+export default graphql(gql`
+  {
+    events(slug: "reacteurope-2017") {
+      schedule(tags: "*") {
+        id
+        title
+        startDate
+        eventId
+        description
+        speakers {
+          name
+          twitter
+          github
+          bio
+          avatarUrl
+        }
+      }
+    }
   }
+`)(ScheduleListScreen);
+
+class DaySelectionButton extends React.Component {
+render() {
+  return (
+    <TouchableHighlight
+      onPress={this.props.onPress}
+      underlayColor="#19217A"
+      style={[
+        styles.daySelectionButton,
+        this.props.day === this.props.selectedDay &&
+          styles.daySelectionButtonSelected,
+      ]}>
+      <Text style={styles.daySelectionButtonText}>
+        {this.props.day.toUpperCase()}
+      </Text>
+    </TouchableHighlight>
+  );
+}
 }
 
 class HeaderComponent extends React.Component {
-  render() {
-    return (
-      <View style={styles.headerContainer}>
+render() {
+  return (
+    <View style={styles.headerContainer}>
+      <Image
+        source={require('../assets/hero.png')}
+        style={styles.headerImage}
+      />
+
+      <View
+        style={{
+          flex: 1,
+          paddingTop: 40,
+          alignItems: 'center',
+        }}>
         <Image
-          source={require('../assets/hero.png')}
-          style={styles.headerImage}
+          source={require('../assets/logo.png')}
+          style={{ width: 85, height: 85, resizeMode: 'contain' }}
         />
-
-        <View
+        <Text
           style={{
-            flex: 1,
-            paddingTop: 40,
-            alignItems: 'center',
+            fontSize: 25,
+            color: '#fff',
+            backgroundColor: 'transparent',
           }}>
-          <Image
-            source={require('../assets/logo.png')}
-            style={{ width: 85, height: 85, resizeMode: 'contain' }}
-          />
-          <Text
-            style={{
-              fontSize: 25,
-              color: '#fff',
-              backgroundColor: 'transparent',
-            }}>
-            React Europe
-          </Text>
-        </View>
-
-        <View
-          style={{
-            marginVertical: 25,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <DaySelectionButton
-            day="Thursday"
-            selectedDay={this.props.selectedDay}
-            onPress={() => this.props.onChangeSelectedDay('Thursday')}
-          />
-          <View style={{ width: 10 }} />
-          <DaySelectionButton
-            day="Friday"
-            selectedDay={this.props.selectedDay}
-            onPress={() => this.props.onChangeSelectedDay('Friday')}
-          />
-        </View>
+          React Europe
+        </Text>
       </View>
-    );
-  }
+
+      <View
+        style={{
+          marginVertical: 25,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <DaySelectionButton
+          day="Thursday"
+          selectedDay={this.props.selectedDay}
+          onPress={() => this.props.onChangeSelectedDay('Thursday')}
+        />
+        <View style={{ width: 10 }} />
+        <DaySelectionButton
+          day="Friday"
+          selectedDay={this.props.selectedDay}
+          onPress={() => this.props.onChangeSelectedDay('Friday')}
+        />
+      </View>
+    </View>
+  );
+}
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  headerContainer: {
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: null,
-    width: null,
-    resizeMode: 'cover',
-    opacity: 0.4,
-  },
-  daySelectionButton: {
-    backgroundColor: '#3140DC',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 15,
-    opacity: 0.5,
-  },
-  daySelectionButtonSelected: {
-    opacity: 1,
-  },
-  daySelectionButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
+container: {
+  flex: 1,
+  backgroundColor: '#fff',
+  justifyContent: 'center',
+},
+headerContainer: {
+  backgroundColor: '#000',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+headerImage: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  height: null,
+  width: null,
+  resizeMode: 'cover',
+  opacity: 0.4,
+},
+daySelectionButton: {
+  backgroundColor: '#3140DC',
+  paddingHorizontal: 20,
+  paddingVertical: 8,
+  borderRadius: 15,
+  opacity: 0.5,
+},
+daySelectionButtonSelected: {
+  opacity: 1,
+},
+daySelectionButtonText: {
+  color: '#fff',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
 });

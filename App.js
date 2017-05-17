@@ -8,6 +8,15 @@ import FeedbackScreen from './screens/FeedbackScreen';
 import { StackNavigator, TabNavigator, TabBarBottom } from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons';
 
+import { ApolloClient, ApolloProvider } from 'react-apollo';
+import { createNetworkInterface } from 'apollo-client';
+
+const networkInterface = createNetworkInterface('https://www.react-europe.org/gql');
+const client = new ApolloClient({
+  networkInterface,
+  dataIdFromObject: r => r.id,
+});
+
 const createTabBarIconWrapper = (
   TabBarIconComponent,
   defaultProps
@@ -92,7 +101,9 @@ export default class App extends React.Component {
         { Platform.OS === 'android' && (
           <View style={{height: Constants.statusBarHeight, backgroundColor: '#050B7A'}} />
         ) }
-        <RootNavigator />
+        <ApolloProvider client={client}>
+          <RootNavigator />
+        </ApolloProvider>
       </View>
     );
     // return <EventDetailsScreen />;
